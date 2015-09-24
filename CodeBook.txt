@@ -1,0 +1,133 @@
+This file describes the variables, the data, and any transformations or work that I have performed to clean up the data.
+
+    The site where the data was obtained:
+    http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+    The data for the project:
+    https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+
+This code book summarizes the resulting data fields in tidy.txt.
+Identifiers
+
+    subject - The ID of the test subject
+    activity - The type of activity performed when the corresponding measurements were taken
+
+Measurements
+
+    tBodyAccMeanX
+    tBodyAccMeanY
+    tBodyAccMeanZ
+    tBodyAccStdX
+    tBodyAccStdY
+    tBodyAccStdZ
+    tGravityAccMeanX
+    tGravityAccMeanY
+    tGravityAccMeanZ
+    tGravityAccStdX
+    tGravityAccStdY
+    tGravityAccStdZ
+    tBodyAccJerkMeanX
+    tBodyAccJerkMeanY
+    tBodyAccJerkMeanZ
+    tBodyAccJerkStdX
+    tBodyAccJerkStdY
+    tBodyAccJerkStdZ
+    tBodyGyroMeanX
+    tBodyGyroMeanY
+    tBodyGyroMeanZ
+    tBodyGyroStdX
+    tBodyGyroStdY
+    tBodyGyroStdZ
+    tBodyGyroJerkMeanX
+    tBodyGyroJerkMeanY
+    tBodyGyroJerkMeanZ
+    tBodyGyroJerkStdX
+    tBodyGyroJerkStdY
+    tBodyGyroJerkStdZ
+    tBodyAccMagMean
+    tBodyAccMagStd
+    tGravityAccMagMean
+    tGravityAccMagStd
+    tBodyAccJerkMagMean
+    tBodyAccJerkMagStd
+    tBodyGyroMagMean
+    tBodyGyroMagStd
+    tBodyGyroJerkMagMean
+    tBodyGyroJerkMagStd
+    fBodyAccMeanX
+    fBodyAccMeanY
+    fBodyAccMeanZ
+    fBodyAccStdX
+    fBodyAccStdY
+    fBodyAccStdZ
+    fBodyAccMeanFreqX
+    fBodyAccMeanFreqY
+    fBodyAccMeanFreqZ
+    fBodyAccJerkMeanX
+    fBodyAccJerkMeanY
+    fBodyAccJerkMeanZ
+    fBodyAccJerkStdX
+    fBodyAccJerkStdY
+    fBodyAccJerkStdZ
+    fBodyAccJerkMeanFreqX
+    fBodyAccJerkMeanFreqY
+    fBodyAccJerkMeanFreqZ
+    fBodyGyroMeanX
+    fBodyGyroMeanY
+    fBodyGyroMeanZ
+    fBodyGyroStdX
+    fBodyGyroStdY
+    fBodyGyroStdZ
+    fBodyGyroMeanFreqX
+    fBodyGyroMeanFreqY
+    fBodyGyroMeanFreqZ
+    fBodyAccMagMean
+    fBodyAccMagStd
+    fBodyAccMagMeanFreq
+    fBodyBodyAccJerkMagMean
+    fBodyBodyAccJerkMagStd
+    fBodyBodyAccJerkMagMeanFreq
+    fBodyBodyGyroMagMean
+    fBodyBodyGyroMagStd
+    fBodyBodyGyroMagMeanFreq
+    fBodyBodyGyroJerkMagMean
+    fBodyBodyGyroJerkMagStd
+    fBodyBodyGyroJerkMagMeanFreq
+
+Activity Labels
+
+    WALKING (value 1): subject was walking during the test
+    WALKING_UPSTAIRS (value 2): subject was walking up a staircase during the test
+    WALKING_DOWNSTAIRS (value 3): subject was walking down a staircase during the test
+    SITTING (value 4): subject was sitting during the test
+    STANDING (value 5): subject was standing during the test
+    LAYING (value 6): subject was laying down during the test
+
+
+The run_analysis.R script performs the following steps to clean the data:
+
+    1. Read X_train.txt, y_train.txt and subject_train.txt and store them in trainData, trainLabel and trainSubject variables respectively. (step1)
+
+    2. Read X_test.txt, y_test.txt and subject_test.txt and store them in testData, testLabel and testSubject variables respectively. (step1)
+
+    3. Merging types of data together (step1)
+	- concatenate testData to trainData to create a 10299*561 data frame, UData (UnifiedData); 
+	- concatenate testLabel to trainLabel to create a 10299*1 data frame, ULabel; 
+	- concatenate testSubject to trainSubject to create a 10299*1 data frame, USubject.
+
+    4. Read the features.txt file and store the data in a variable called features. We only extract the measurements on the mean and standard deviation. This results in a 79 indices list. We get a subset of UData with the 79 corresponding columns. See file description above.(step2).
+ 
+    5. Clean the column names of the subset. We add a capital letter to mean (Mean) and std (Std) and then remove the "()" and "-" symbols in labels names. (step2)
+
+    6. Read the activity_labels.txt file and store the data in a variable called activity. See file description above. (step3) 
+
+    7. Clean the activity names in the second column of activity. First, we transformed all activities names into lower cases. If the name has an underscore between letters (like WALKING_UPSTAIRS or WALKING_DOWNSTAIRS), we removed the underscore. (step3)
+
+    8. Transform the values of ULabel according to the activity data frame. (step3)
+
+    9. Naming the first two columns, "subject" and "activity". (step4)
+
+    10. Concaneting the USubject, ULabel and UData colums to generate a new cleaned 10299x81 data frame, tidyData. The "subject" column contains integers that range from 1 to 30 inclusive; the "activity" column contains 6 kinds of activity names; the last 79 columns contain measurements (see details above).
+
+    11. Generate a second independent tidy data set with the average of each measurement for each activity and each subject by using the package reshape2 inorder to melting, casting and calculating the mean of each variable. 
+
+    12. Lastly, Write the data out to a "tidy.txt" file in current working directory resulting in a 180*81 data frame.
